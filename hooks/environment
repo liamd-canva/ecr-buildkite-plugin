@@ -143,7 +143,7 @@ function login_using_aws_ecr_get_login_password() {
 
   login_args=("--region" "${region}")
 
-  if [[ "${BUILDKITE_PLUGIN_ECR}" == "china" ]]; then
+  if [[ "${BUILDKITE_PLUGIN_ECR_PARTITION}" == "china" ]]; then
     ecr_partition="amazonaws.com.cn"
   else
     ecr_partition="amazonaws.com"
