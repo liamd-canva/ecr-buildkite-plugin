@@ -143,6 +143,12 @@ function login_using_aws_ecr_get_login_password() {
 
   login_args=("--region" "${region}")
 
+  if [[ "${BUILDKITE_PLUGIN_ECR}" == "china" ]]; then
+    ecr_partition="amazonaws.com.cn"
+  else
+    ecr_partition="amazonaws.com"
+  fi
+
   if [[ -n "${BUILDKITE_PLUGIN_ECR_PROFILE:-}" ]] ; then
     login_args+=("--profile" "${BUILDKITE_PLUGIN_ECR_PROFILE}")
   fi
@@ -162,7 +168,7 @@ function login_using_aws_ecr_get_login_password() {
   echo "^^^ Authenticating with AWS ECR in $region for ${account_ids[*]} :ecr: :docker:"
   local password; password="$(retry "${BUILDKITE_PLUGIN_ECR_RETRIES:-0}" aws ${login_args[@]+"${login_args[@]}"} ecr get-login-password)"
   for account_id in "${account_ids[@]}"; do
-    retry "${BUILDKITE_PLUGIN_ECR_RETRIES:-0}" --with-stdin docker login --username AWS --password-stdin "$account_id.dkr.ecr.$region.amazonaws.com" <<< "$password"
+    retry "${BUILDKITE_PLUGIN_ECR_RETRIES:-0}" --with-stdin docker login --username AWS --password-stdin "$account_id.dkr.ecr.$region.$ecr_partition" <<< "$password"
   done
 }
 

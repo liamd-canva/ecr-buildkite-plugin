@@ -18,6 +18,8 @@ configuration:
       type: boolean
     region:
       type: string
+    partition:
+      type: string
     assume-role:
       type: object
       properties:
